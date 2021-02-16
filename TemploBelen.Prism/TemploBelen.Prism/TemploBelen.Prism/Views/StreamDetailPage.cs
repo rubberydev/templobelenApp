@@ -1,0 +1,82 @@
+﻿using System;
+using System.Web;
+using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+
+namespace YoutubeChannelStream
+{
+	public class StreamDetailPage : ContentPage
+	{
+		RSSFeedObject _rssFeedObject;
+
+		public StreamDetailPage(RSSFeedObject feedObject)
+		{
+			Title = feedObject.Title;
+			_rssFeedObject = feedObject;
+			// For iPhone X
+			On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+
+			LoadPage();
+		}
+
+		private void LoadPage()
+		{
+			HtmlWebViewSource personHtmlSource = new HtmlWebViewSource();
+			var screenWidth = Xamarin.Forms.Application.Current.MainPage.Width - 10;
+
+			// According to standard video resolutions
+			var playerHeight = screenWidth / 1.5;
+
+
+			Uri uri = new Uri(_rssFeedObject.Link);
+			string queryString = uri.Query;
+			string technology = System.Web.HttpUtility.ParseQueryString(queryString).Get("v");
+			string header = "<head> <style> body {background-color: rgb(241, 241, 241);}</style> </head>";
+			var videoUrl = "https://www.youtube.com/embed/" + technology;
+			personHtmlSource.Html = string.Format("<html>{0}<body><iframe width='{1}' height='{2}' src='{3}' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe></body></html>",
+								  header, screenWidth, playerHeight, videoUrl);
+
+			var webview = new WebView()
+			{
+				BackgroundColor = Color.DimGray,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+			};
+			webview.Source = personHtmlSource;
+
+			Label title = new Label
+			{
+				Text = _rssFeedObject.Title,
+				HorizontalOptions = LayoutOptions.Center,
+				FontSize = 20,
+				FontAttributes = FontAttributes.Bold
+			};
+
+			Label date = new Label
+			{
+				Text = _rssFeedObject.Date,
+				FontSize = 12
+			};
+
+			var descriptionStack = new StackLayout
+			{
+				BackgroundColor = Color.FromRgb(241, 241, 241),
+				Spacing = 10,
+				Padding = 20,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Children = { title, date }
+			};
+
+			var pageStack = new StackLayout()
+			{
+				BackgroundColor = Color.FromRgb(241, 241, 241),
+				Spacing = 0,
+				Margin = 0,
+				Padding = 0,
+				Children = { webview, descriptionStack }
+			};
+			Content = pageStack;
+		}
+	}
+}

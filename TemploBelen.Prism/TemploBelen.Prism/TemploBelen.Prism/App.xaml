@@ -5,7 +5,6 @@
              x:Class="TemploBelen.Prism.App">
   <Application.Resources>
 
-    <!-- Application resource dictionary -->
-
+  <x:String x:Key="ChannelId">UCfrrN3GuNgtcetJeiRsELUw</x:String>
   </Application.Resources>
 </prism:PrismApplication>

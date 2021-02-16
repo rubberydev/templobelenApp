@@ -1,10 +1,10 @@
 using Prism;
 using Prism.Ioc;
 using TemploBelen.Prism.ViewModels;
-using TemploBelen.Prism.Views;
 using Xamarin.Essentials.Implementation;
 using Xamarin.Essentials.Interfaces;
 using Xamarin.Forms;
+using YoutubeChannelStream;
 
 namespace TemploBelen.Prism
 {
@@ -18,6 +18,11 @@ namespace TemploBelen.Prism
         protected override async void OnInitialized()
         {
             InitializeComponent();
+            MainPage = new NavigationPage(new StreamPage())
+            {
+                BarTextColor = Color.FromRgb(255, 255, 255),
+                BarBackgroundColor = Color.FromRgb(60, 171, 223)
+            };
 
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
@@ -27,7 +32,7 @@ namespace TemploBelen.Prism
             containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
-            containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            //containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
         }
     }
 }
