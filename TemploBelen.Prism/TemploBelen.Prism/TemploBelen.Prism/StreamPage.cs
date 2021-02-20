@@ -4,6 +4,7 @@ using CodeHollow.FeedReader;
 using System.Collections.Generic;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Essentials;
+using System.Linq;
 
 namespace YoutubeChannelStream
 {
@@ -12,6 +13,7 @@ namespace YoutubeChannelStream
 		#region Fields
 		Xamarin.Forms.ListView _listView = new Xamarin.Forms.ListView();
 		List<RSSFeedObject> _feeds = new List<RSSFeedObject>();
+	    List<RSSFeedObject> _original_feeds = new List<RSSFeedObject>();
 		#endregion
 
 		#region Constructor
@@ -21,6 +23,7 @@ namespace YoutubeChannelStream
 
 			// For iPhone X
 			On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+			
 
 			_listView.ItemSelected += listView_ItemSelected;
 			_listView.SelectedItem = null;
@@ -28,14 +31,17 @@ namespace YoutubeChannelStream
 			// Default values to display if the feeds aren't loading
 			var label = new Label();
 			var stack = new StackLayout()
-			{
+			{ 
 				HorizontalOptions = LayoutOptions.Center,
-				VerticalOptions = LayoutOptions.Center
+				VerticalOptions = LayoutOptions.FillAndExpand
 			};
-			stack.Children.Add(label);
+			
 			Content = stack;
 			if (_feeds != null)
-				PopulateList();
+            {
+				_original_feeds = _feeds;
+				this.PopulateList();
+			}
 			else
 				label.Text = "Either the feed is empty or the URL is incorrect.";
 		}
@@ -44,14 +50,46 @@ namespace YoutubeChannelStream
 		#region Private Functions & Event Handlers
 		private void PopulateList()
 		{
+			var stack = new StackLayout()
+			{
+				Orientation = StackOrientation.Vertical,
+				HorizontalOptions = LayoutOptions.Center,
+				VerticalOptions = LayoutOptions.FillAndExpand
+			};
 			_listView.HasUnevenRows = true;
+			var filterList = new List<string>();
+			filterList.Add("Celebración");
+			filterList.Add("Matutino");
+			filterList.Add("Ayuno");
 
+			var picker = new Xamarin.Forms.Picker
+			{
+				Title = "Seleccione una opcion...",
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				TitleColor = Color.Blue
+			};
+
+			stack.Children.Add(picker);
+			picker.SelectedIndexChanged += OnPickerSelectedIndexChanged;
+			picker.ItemsSource = filterList;
+			stack.Children.Add(picker);
 			DataTemplate template = new DataTemplate(typeof(CustomCell));
 			_listView.ItemTemplate = template;
-
 			_listView.ItemsSource = _feeds;
+			stack.Children.Add(_listView);
+			Content = stack;
+		}
 
-			Content = _listView;
+		void OnPickerSelectedIndexChanged(object sender, EventArgs e)
+		{
+			var picker = (Xamarin.Forms.Picker)sender;
+			int selectedIndex = picker.SelectedIndex;
+
+			if (selectedIndex != -1)
+			{
+				string textFilter = (string)picker.ItemsSource[selectedIndex];
+				this.FilterFeedsAndUpdateListView(textFilter);
+			}
 		}
 
 		private async void listView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -88,17 +126,8 @@ namespace YoutubeChannelStream
 					PopulateList();
 					return;
 				}
-				foreach (var item in rssFeeds.Items)
-				{
-					var feed = new RSSFeedObject()
-					{
-						Title = item.Title,
-						Date = item.PublishingDate.Value.ToString("y"),
-						Link = item.Link
-					};
-					_feeds.Add(feed);
-				}
-				PopulateList();
+				this.LoadFeeds(rssFeeds);
+				this.PopulateList();
 			}
 			else
 			{
@@ -117,6 +146,33 @@ namespace YoutubeChannelStream
 
 			}
 		}
-		#endregion LifeCycle Event Overrides
-	}
+        #endregion LifeCycle Event Overrides
+
+        #region other methods
+		private void LoadFeeds(Feed feeds)
+        {
+			foreach (var item in feeds.Items)
+			{
+				var feed = new RSSFeedObject()
+				{
+					Title = item.Title,
+					Date = item.PublishingDate.Value.ToString("y"),
+					Link = item.Link
+				};
+				_feeds.Add(feed);
+			}
+
+
+		}
+
+		private void FilterFeedsAndUpdateListView(string filterCriteria)
+        {
+			var updateFeeds = _original_feeds.Where(x => x.Title.Contains(filterCriteria)).ToList();
+			_feeds = updateFeeds.Count != 0 ? updateFeeds : _original_feeds;
+
+			if(_feeds.Count != 0 )
+				this.PopulateList();
+        }
+        #endregion
+    }
 }
