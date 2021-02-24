@@ -57,27 +57,17 @@ namespace YoutubeChannelStream
 				VerticalOptions = LayoutOptions.FillAndExpand
 			};
 			_listView.HasUnevenRows = true;
-			/*var filterList = new List<string>();
-			filterList.Add("Celebración");
-			filterList.Add("Matutino");
-			filterList.Add("Ayuno");
-
-			var picker = new Xamarin.Forms.Picker
-			{
-				Title = "Seleccione una opcion...",
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				TitleColor = Color.Blue
-			};*/
 			var filter = new Xamarin.Forms.Entry
             {
 				HorizontalOptions = LayoutOptions.Center,
-				BackgroundColor =Color.Azure
+			    Placeholder = "filtre por tipo de evento e,g Matutino...",
+				BackgroundColor = Color.FromRgb(60, 171, 223),
+				PlaceholderColor = Color.White
+				
+
 			};
 			filter.Completed += this.Entry_Completed;
 			stack.Children.Add(filter);
-			/*picker.SelectedIndexChanged += OnPickerSelectedIndexChanged;
-			picker.ItemsSource = filterList;
-			stack.Children.Add(picker);*/
 			DataTemplate template = new DataTemplate(typeof(CustomCell));
 			_listView.ItemTemplate = template;
 			_listView.ItemsSource = _feeds;
