@@ -57,7 +57,7 @@ namespace YoutubeChannelStream
 				VerticalOptions = LayoutOptions.FillAndExpand
 			};
 			_listView.HasUnevenRows = true;
-			var filterList = new List<string>();
+			/*var filterList = new List<string>();
 			filterList.Add("Celebración");
 			filterList.Add("Matutino");
 			filterList.Add("Ayuno");
@@ -67,17 +67,28 @@ namespace YoutubeChannelStream
 				Title = "Seleccione una opcion...",
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				TitleColor = Color.Blue
+			};*/
+			var filter = new Xamarin.Forms.Entry
+            {
+				HorizontalOptions = LayoutOptions.Center,
+				BackgroundColor =Color.Azure
 			};
-
-			stack.Children.Add(picker);
-			picker.SelectedIndexChanged += OnPickerSelectedIndexChanged;
+			filter.Completed += this.Entry_Completed;
+			stack.Children.Add(filter);
+			/*picker.SelectedIndexChanged += OnPickerSelectedIndexChanged;
 			picker.ItemsSource = filterList;
-			stack.Children.Add(picker);
+			stack.Children.Add(picker);*/
 			DataTemplate template = new DataTemplate(typeof(CustomCell));
 			_listView.ItemTemplate = template;
 			_listView.ItemsSource = _feeds;
 			stack.Children.Add(_listView);
 			Content = stack;
+		}
+
+		void Entry_Completed(object sender, EventArgs e)
+		{
+			var text = ((Xamarin.Forms.Entry)sender).Text; //cast sender to access the properties of the Entry
+			this.FilterFeedsAndUpdateListView(text);
 		}
 
 		void OnPickerSelectedIndexChanged(object sender, EventArgs e)
