@@ -21,7 +21,7 @@ namespace TemploBelen.Prism
             MainPage = new NavigationPage(new StreamPage())
             {
                 BarTextColor = Color.FromRgb(255, 255, 255),
-                BarBackgroundColor = Color.FromRgb(60, 171, 223)
+                BarBackgroundColor = Color.FromRgb(17, 70, 138)
             };
 
             await NavigationService.NavigateAsync("NavigationPage/MainPage");

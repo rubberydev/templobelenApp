@@ -139,7 +139,7 @@ namespace YoutubeChannelStream
 					Xamarin.Forms.Application.Current.MainPage = new Xamarin.Forms.NavigationPage(new StreamPage())
 					{
 						BarTextColor = Color.FromRgb(255, 255, 255),
-						BarBackgroundColor = Color.FromRgb(60, 171, 223)
+						BackgroundColor = Color.FromRgb(1, 124, 194),
 					};
 				}
 				else if (optionSelected == "Cancelar!" || string.IsNullOrEmpty(optionSelected))
