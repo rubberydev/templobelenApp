@@ -132,7 +132,7 @@ namespace YoutubeChannelStream
 			}
 			else
 			{
-				var optionSelected = await Xamarin.Forms.Application.Current.MainPage.DisplayActionSheet("Error dev red", "Recargar!", "Cancelar!", "Señor usuario si desea continuar habillite la conexion a internet y seleccione la acción Recargar!");
+				var optionSelected = await Xamarin.Forms.Application.Current.MainPage.DisplayActionSheet("Error de red", "Recargar!", "Cancelar!", "Señor usuario si desea continuar habillite la conexion a internet y seleccione la acción Recargar!");
 
 				if (optionSelected == "Recargar!")
 				{
