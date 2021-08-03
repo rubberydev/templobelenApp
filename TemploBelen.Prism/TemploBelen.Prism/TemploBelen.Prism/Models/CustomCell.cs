@@ -15,27 +15,47 @@ namespace YoutubeChannelStream
 			youTubeFeed2.LineBreakMode = LineBreakMode.WordWrap;
 			youTubeFeed2.SetBinding(Label.TextProperty, "Date");
 			youTubeFeed2.FontSize = 10;
+			var customGrid = new Grid()
+			{
+				BackgroundColor = Color.LightGray,
+				RowDefinitions =
+				{
+					new RowDefinition { Height = new GridLength(80) }
+				},
+				ColumnDefinitions =
+					{
+					   new ColumnDefinition(),
+					   new ColumnDefinition(),
+					   new ColumnDefinition()
+					}
+			};
 
-			var verticalStack = new StackLayout();
-			verticalStack.Children.Add(youTubeFeed);
-			verticalStack.Children.Add(youTubeFeed2);
 
-			var image = new Image()
+			customGrid.Children.Add(new Image()
 			{
 				Source = "youtube.png",
 				HeightRequest = 50,
 				MinimumWidthRequest = 70
-			};
-			var horizontalStack = new StackLayout()
+			});
+			Grid.SetColumn(youTubeFeed, 1);
+			Grid.SetColumn(youTubeFeed2, 2);
+
+			customGrid.Children.Add(youTubeFeed2);
+			customGrid.Children.Add(youTubeFeed);
+
+			var horizontalFrame = new Frame()
 			{
-				Orientation = StackOrientation.Horizontal,
-				Children = { image, verticalStack },
-				MinimumHeightRequest = 100,
-				Padding = 10,
-				Margin = 5
+				BorderColor = Color.FromHex("#11468a"),
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.Center,
+				Content = customGrid,
+		 	    MinimumHeightRequest = 50,
+				Margin = 10,
+				
+				
 			};
 
-			View = horizontalStack;
+			View = horizontalFrame;
 		}
 	}
 }
